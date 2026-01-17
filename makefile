@@ -1,11 +1,18 @@
-test.exe: map_gen.o utils.o
-	gcc map_gen.o utils.o -o test.exe
+LIB_NAME = libperlin.a
 
-map_gen.o: map_gen.c
-	gcc -c map_gen.c -o map_gen.o
+CC = gcc
+CFLAGS = -Wall -Wextra -O2
 
-utils.o: utils.c
-	gcc -c utils.c -o utils.o
+SRCS = map_gen.c utils.c
+OBJS = $(SRCS:.c=.o)
+
+all: $(LIB_NAME)
+
+$(LIB_NAME): $(OBJS)
+	ar rcs $(LIB_NAME) $(OBJS)
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f test.exe utils.o map_gen.o
+	rm -f $(OBJS) $(LIB_NAME) test.exe

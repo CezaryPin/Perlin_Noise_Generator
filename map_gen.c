@@ -7,16 +7,13 @@
 #include "structs.h"
 #include "map_gen.h"
 
-int main(){
-    map *perlin=perlin_noise_map( 10, 10, 100);
-    //print_map(perlin);
-    create_image(perlin);
-    free_map(perlin);
-
-
-    return 0;
-
-}
+// you need to create map with perlin_noise_map it creats map with values in [0,1] range
+// int main(){
+//     map *perlin=perlin_noise_map( 10, 10, 100);
+//     create_image(perlin);
+//     free_map(perlin);
+//     return 0;
+// }s
 
 map *create_map(int w, int h){
     map *grd=malloc(sizeof(map));
@@ -27,6 +24,7 @@ map *create_map(int w, int h){
         grd->vector_map[i]=calloc(h,sizeof(double)); 
     return grd;
 }
+
 void print_map(map *grid){
     printf("w: %d   h:%d\n",grid->w,grid->h);
     for(int i=0;i<grid->w;i++){
@@ -98,6 +96,7 @@ double noise(map *grd, double x, double y) {
 
 
     double final = lerp_bottom + sty * (lerp_top - lerp_bottom);
+    final=normalize_val(final,-0.707,0.707);
 
     return final;
 }
@@ -124,9 +123,19 @@ map *perlin_noise_map(int w, int h, int sampling) {
     free_map(grid); 
     return noise_map;
 }
-
+double normalize_val(double val,double min,double max){  //returns val in normalize range [0,1]
+    double range = max-min;
+    if(range==0)
+        return 0;
+    double tmp=(val-min)/range;
+    if(tmp<0)
+        return 0;
+    else if(tmp>1)
+        return 1;
+    return tmp;
+}
 int val_to_colour(double val){
-    int tmp=round((val+1)*0.5*255);
+    int tmp=round(val*255);
     if(tmp<0)
         return 0;
     if(tmp>255)
