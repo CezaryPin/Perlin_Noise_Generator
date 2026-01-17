@@ -8,3 +8,4 @@ double noise(map *grd,double x,double y);
 map *perlin_noise_map(int w, int h,int sampling);
 int val_to_colour(double val);
 void create_image(map *noise);
+double normalize_val(double val,double min,double max);
